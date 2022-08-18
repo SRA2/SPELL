@@ -44,7 +44,7 @@ You can change the `--feature` argument to `resnet50-tsm-aug` for SPELL with Res
 
 ## Citation
 ECCV 2022 paper:
-```
+```bibtex
 @article{min2022learning,
   title={Learning Long-Term Spatial-Temporal Graphs for Active Speaker Detection},
   author={Min, Kyle and Roy, Sourya and Tripathi, Subarna and Guha, Tanaya and Majumdar, Somdeb},
