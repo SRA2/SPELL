@@ -1,6 +1,6 @@
 # SPELL
 Learning Long-Term Spatial-Temporal Graphs for Active Speaker Detection (ECCV 2022)\
-[**paper**](https://arxiv.org/abs/2207.07783) | **poster** | **presentation** (will be updated soon)
+[**paper**](https://arxiv.org/abs/2207.07783) | [**poster**](https://drive.google.com/file/d/1q4ds3p1X7mfdpvROMYrBChrt2Zr55sfx/view?usp=sharing) | [**presentation**](https://youtu.be/wqb3crJ47KM)
 
 ## Overview
 SPELL is a novel spatial-temporal graph learning framework for active speaker detection (ASD). It can model a minute-long temporal contexts without relying on computationally expensive networks. Through extensive experiments on the AVA-ActiveSpeaker dataset, we demonstrate that learning graph-based representations significantly improves the detection performance thanks to its explicit spatial and temporal structure. Specifically, SPELL outperforms all previous state-of-the-art approaches while requiring significantly lower memory and computation resources.
@@ -58,6 +58,7 @@ Technical report for AVA-ActiveSpeaker challenge 2022:
 @article{minintel,
   title={Intel Labs at ActivityNet Challenge 2022: SPELL for Long-Term Active Speaker Detection},
   author={Min, Kyle and Roy, Sourya and Tripathi, Subarna and Guha, Tanaya and Majumdar, Somdeb},
+  journal={The ActivityNet Large-Scale Activity Recognition Challenge},
   year={2022}
 }
 ```
