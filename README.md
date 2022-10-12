@@ -59,6 +59,7 @@ Technical report for AVA-ActiveSpeaker challenge 2022:
   title={Intel Labs at ActivityNet Challenge 2022: SPELL for Long-Term Active Speaker Detection},
   author={Min, Kyle and Roy, Sourya and Tripathi, Subarna and Guha, Tanaya and Majumdar, Somdeb},
   journal={The ActivityNet Large-Scale Activity Recognition Challenge},
-  year={2022}
+  year={2022},
+  note={\url{https://research.google.com/ava/2022/S2_SPELL_ActivityNet_Challenge_2022.pdf}}
 }
 ```
