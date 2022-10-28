@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 import glob
 import numpy as np
@@ -6,12 +7,18 @@ from tqdm import tqdm
 import torch
 from torch_geometric.data import Data
 from torch_geometric.data import Dataset
+from torch_geometric.data.makedirs import makedirs
+
+def files_exist(files) -> bool:
+    # NOTE: We return `False` in case `files` is empty, leading to a
+    # re-processing of files on every instantiation.
+    return len(files) != 0 and all([os.path.exists(f) for f in files])
 
 ## this class is used both as a dataloader for training the GNN and for constructing the graph data
 ## if parameter cont==1, it assumes the dataset already exists and samples from the datset path during training
 ## during graph generation phase cont is set any other value except 1 (e.g. 0)
 class AVADataset(Dataset):
-    def __init__(self, dpath, graph_data, cont, root, mode = 'train', transform = None, pre_transform = None):
+    def __init__(self, dpath, graph_data, cont, root, mode = 'train'):
         # parsing graph paramaters--------------------------
         self.dpath = dpath
         self.numv = graph_data['numv']
@@ -23,7 +30,7 @@ class AVADataset(Dataset):
         self.mode = mode
         #---------------------------------------------------
 
-        super(AVADataset, self).__init__(root, transform, pre_transform)
+        super(AVADataset, self).__init__(root)
         self.all_files = self.processed_file_names
 
     @property
@@ -37,23 +44,25 @@ class AVADataset(Dataset):
         files = glob.glob(self.dpath)
         files = sorted(files)
 
-        files=[f[-15:-4]  for f in files]
-
+        files = [os.path.splitext(os.path.basename(f))[0] for f in files]
         if self.cont == 1:
-            files = os.listdir(self.processed_dir)
-
-            ## the directory will contain two non-graph files; we remove them from the list---------
-            files.remove('pre_transform.pt')
-            files.remove('pre_filter.pt')
-            #---------------------------------------------------------------------------------------
-
-            files = sorted(files)
-            print('Number of {} graphs: {}'.format(self.mode, len(files)))
+            files = sorted(os.listdir(self.processed_dir))
 
         return files
 
-    def download(self):
-        pass
+    def _download(self):
+        return
+
+    def _process(self):
+        if files_exist(self.processed_paths) or files_exist([d+'_001.pt' for d in self.processed_paths]):  # pragma: no cover
+            return
+
+        print('Processing...', file=sys.stderr)
+
+        makedirs(self.processed_dir)
+        self.process()
+
+        print('Done!', file=sys.stderr)
 
     def process(self):
         files = glob.glob(self.dpath)
@@ -151,14 +160,17 @@ class AVADataset(Dataset):
                     vte = (data_f[j][0], float(data_f[j][1]), data_f[j][2])
 
                     ## parse the current facebox's feature from data_f
-                    temp = list(self.decode_feature(data_f[j][-1]))
+                    feat = self.decode_feature(data_f[j][-1])
 
-                    ## in additiona to the A-V feature, we can append additional information to the feature vector for later usage like time-stamp
-                    temp.extend(dict_vte_spe[vte])
-                    temp.append(id_dict[data_f[j][2]+str(ct)])
-                    temp.append(vstamp_dict[stamp_marker])
                     # append feature vector to the list of facebox(or vertex) features
-                    x.append(temp)
+                    ## in additiona to the A-V feature, we can append additional information to the feature vector for later usage like time-stamp
+                    tail = []
+                    tail.extend(dict_vte_spe[vte])
+                    tail.extend([id_dict[data_f[j][2]+str(ct)], vstamp_dict[stamp_marker]])
+                    feat = np.append(feat, tail)
+                    feat = np.expand_dims(feat, axis=0)
+
+                    x.append(feat)
 
                     #append i-th vertex label
                     y.append(float(data_f[j][3]))
@@ -198,11 +210,10 @@ class AVADataset(Dataset):
                 print("Number of edges", num_edge) ## shows number of edges in each graph while generating them
 
                 ##--------------- convert vertex features,edges,edge_features, labels to tensors
-                x = torch.tensor(x, dtype=torch.float32)
-                edge_index = torch.tensor([source_vertices, target_vertices], dtype=torch.long)
-                edge_attr = torch.tensor(edge_attr, dtype=torch.float32)
-                y = torch.tensor(y, dtype=torch.float32)
-                y = y.unsqueeze(1)
+                x = torch.FloatTensor(np.concatenate(x, axis=0))
+                edge_index = torch.LongTensor([source_vertices, target_vertices])
+                edge_attr = torch.FloatTensor(edge_attr)
+                y = torch.FloatTensor(y).unsqueeze(1)
                 #----------------
 
                 ## creates the graph data object that stores (features,edges,labels)
@@ -226,4 +237,4 @@ class AVADataset(Dataset):
     def decode_feature(self, feature_data):
         feature_data = feature_data[1:-1]
         feature_data = feature_data.split(',')
-        return np.asarray([float(fd) for fd in feature_data])
+        return np.array([float(fd) for fd in feature_data], dtype=np.float32)

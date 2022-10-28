@@ -135,7 +135,7 @@ def evaluation(model, val_loader, device, feature_dim):
 
     with torch.no_grad():
         for data in val_loader:
-            data.to(device)
+            data = data.to(device)
             x = data.x
             y = data.y
 

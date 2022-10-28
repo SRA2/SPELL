@@ -36,12 +36,8 @@ def main():
 
 # function that takes input of feature path and target path for storing graphs and creates graphs using the dataloader AVADataset
 def graph_gen(dpath, tpath, graph_data, mode, cont=0):
-
-   # if target path doesn't exist ; create it
-  if not os.path.exists(tpath):
-    os.makedirs(tpath)
-
-  Fdataset = AVADataset(dpath, graph_data, cont, tpath, mode)
+    os.makedirs(tpath, exist_ok=True)
+    Fdataset = AVADataset(dpath, graph_data, cont, tpath, mode)
 
 
 if __name__ == '__main__':
