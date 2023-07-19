@@ -13,7 +13,7 @@ SPELL achieved 2nd place in the [AVA-ActiveSpeaker Challenge](https://research.g
 We used python=3.6, pytorch=1.9.1, and torch-geometric=2.0.3 in our experiments.
 
 ## Code Usage
-1) Download the audio-visual features and the annotation csv files from [Google Drive](https://drive.google.com/drive/folders/1fYALbElvIKjqeS8uGTHSeqtOhA6FXuRi?usp=sharing). The directories should look like as follows:
+1) Download the audio-visual features and the annotation csv files from [Google Drive](https://drive.google.com/drive/folders/1_vr3Wxf6yZRA3IjWgelnf0TQqzKzDNeu?usp=sharing). The directories should look like as follows:
 ```
 |-- features
     |-- resnet18-tsm-aug
@@ -40,7 +40,7 @@ python train_val.py --feature resnet18-tsm-aug
 You can change the `--feature` argument to `resnet50-tsm-aug` for SPELL with ResNet-50-TSM.
 
 ## Note
-- We used the official code of [Active Speakers in Context (ASC)](https://github.com/fuankarion/active-speakers-context) to extract the audio-visual features (Stage-1). Specifically, we used `STE_train.py` and `STE_forward.py` of the ASC repository to train our two-stream ResNet-TSM encoders and extract the audio-visual features. We did not use any other components such as the postprocessing module or the context refinement modules. Please refer to `models_stage1_tsm.py` and the checkpoints from this [link](https://drive.google.com/drive/folders/1oom1XLVv8yAR8TVEmepsQ9Yp0E0SIAXM?usp=sharing) to see how we implanted the TSM into the two-stream ResNets.
+- We used the official code of [Active Speakers in Context (ASC)](https://github.com/fuankarion/active-speakers-context) to extract the audio-visual features (Stage-1). Specifically, we used `STE_train.py` and `STE_forward.py` of the ASC repository to train our two-stream ResNet-TSM encoders and extract the audio-visual features. We did not use any other components such as the postprocessing module or the context refinement modules. Please refer to `models_stage1_tsm.py` and the checkpoints from this [link](https://drive.google.com/drive/folders/1-EiPau0uzRA7pesuD5D-f6LZD6mxmYhz?usp=sharing) to see how we implanted the TSM into the two-stream ResNets.
 
 ## Citation
 ECCV 2022 paper:
